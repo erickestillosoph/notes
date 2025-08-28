@@ -1,11 +1,21 @@
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useState, useEffect, useImperativeHandle } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import Link from "@tiptap/extension-link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Bold,
   Italic,
@@ -25,6 +35,9 @@ import {
 
 const TipTapEditor = forwardRef(
   ({ content, onChange, placeholder = "Start typing..." }, ref) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [url, setUrl] = useState("");
+
     const editor = useEditor({
       extensions: [
         StarterKit,
@@ -66,10 +79,10 @@ const TipTapEditor = forwardRef(
     }
 
     const addLink = () => {
-      const url = prompt("Enter URL:");
-      if (url) {
-        editor.chain().focus().setLink({ href: url }).run();
-      }
+      if (!url) return;
+      editor.chain().focus().setLink({ href: url }).run();
+      setUrl("");          // reset input
+      setIsDialogOpen(false); // close dialog
     };
 
     const ToolbarButton = ({ onClick, isActive, children, title }) => (
@@ -183,12 +196,38 @@ const TipTapEditor = forwardRef(
             <Separator orientation="vertical" className="h-6 mx-1" />
 
             <ToolbarButton
-              onClick={addLink}
+              onClick={() => setIsDialogOpen(true)}
               isActive={editor.isActive("link")}
               title="Add Link"
             >
               <LinkIcon className="h-4 w-4" />
             </ToolbarButton>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Link</DialogTitle>
+                  <DialogDescription>
+                    Enter the URL you want to link to.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <Input
+                  type="url"
+                  placeholder="https://example.com"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  autoFocus
+                />
+
+                <DialogFooter className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={addLink}>Add</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Separator orientation="vertical" className="h-6 mx-1" />
 

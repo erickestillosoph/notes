@@ -339,11 +339,11 @@ body {
   font-size: 0.875em;
 }
 
-.ProseMirror a {
+a {
   color: #3b82f6;
   text-decoration: underline;
 }
 
-.ProseMirror a:hover {
+a:hover {
   color: #1d4ed8;
 }
