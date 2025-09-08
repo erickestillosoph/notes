@@ -90,15 +90,6 @@ export default function NotesList({
                     {tag}
                   </Badge>
                 ))}
-
-                {note.tags?.length > 3 && (
-                  <Badge
-                    variant="outline"
-                    className="text-xs py-1 border-primary text-primary"
-                  >
-                    +{note.tags.length - 3}
-                  </Badge>
-                )}
               </div>
             </div>
           </div>
