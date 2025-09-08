@@ -89,12 +89,12 @@ export default function NotesList({
             )}
 
             <div className="flex flex-wrap gap-2 items-center justify-between">
-              <div className="flex gap-1 flex-wrap">
+              <div className="flex gap-1 flex-wrap justify-center m-auto">
                 {note.tags?.slice(0, 3).map((tag, index) => (
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="text-xs px-2 py-1 bg-primary/25 text-primary hover:bg-primary/50"
+                    className="text-xs py-1 bg-primary/25 text-primary hover:bg-primary/50"
                   >
                     {tag}
                   </Badge>
@@ -103,16 +103,12 @@ export default function NotesList({
                 {note.tags?.length > 3 && (
                   <Badge
                     variant="outline"
-                    className="text-xs px-2 py-1 border-primary text-primary"
+                    className="text-xs py-1 border-primary text-primary"
                   >
                     +{note.tags.length - 3}
                   </Badge>
                 )}
               </div>
-
-              <span className="text-xs text-gray-500">
-                {formatDate(note.updatedAt)}
-              </span>
             </div>
           </div>
         </button>
