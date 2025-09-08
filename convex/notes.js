@@ -25,8 +25,8 @@ export const getNotes = query({
 
     // Filter by tag if provided
     if (args.tagFilter) {
-      notes = notes.filter(note =>
-        note.tags.some(tag =>
+      notes = notes.filter((note) =>
+        note.tags.some((tag) =>
           tag.toLowerCase().includes(args.tagFilter.toLowerCase())
         )
       );
@@ -54,7 +54,10 @@ export const searchNotes = query({
     const searchResults = await ctx.db
       .query("notes")
       .withSearchIndex("search_notes", (q) =>
-        q.search("content", args.searchTerm).eq("userId", args.userId).eq("isArchived", false)
+        q
+          .search("content", args.searchTerm)
+          .eq("userId", args.userId)
+          .eq("isArchived", false)
       )
       .collect();
 
@@ -64,9 +67,11 @@ export const searchNotes = query({
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
 
-    const titleAndTagResults = allNotes.filter(note => {
-      const titleMatch = note.title.toLowerCase().includes(args.searchTerm.toLowerCase());
-      const tagMatch = note.tags.some(tag =>
+    const titleAndTagResults = allNotes.filter((note) => {
+      const titleMatch = note.title
+        .toLowerCase()
+        .includes(args.searchTerm.toLowerCase());
+      const tagMatch = note.tags.some((tag) =>
         tag.toLowerCase().includes(args.searchTerm.toLowerCase())
       );
       return (titleMatch || tagMatch) && !note.isArchived;
@@ -74,8 +79,8 @@ export const searchNotes = query({
 
     // Combine and deduplicate results
     const combinedResults = [...searchResults];
-    titleAndTagResults.forEach(note => {
-      if (!combinedResults.find(existing => existing._id === note._id)) {
+    titleAndTagResults.forEach((note) => {
+      if (!combinedResults.find((existing) => existing._id === note._id)) {
         combinedResults.push(note);
       }
     });
@@ -94,8 +99,8 @@ export const getUserTags = query({
       .collect();
 
     const tagSet = new Set();
-    notes.forEach(note => {
-      note.tags.forEach(tag => tagSet.add(tag));
+    notes.forEach((note) => {
+      note.tags.forEach((tag) => tagSet.add(tag));
     });
 
     return Array.from(tagSet).sort();
@@ -107,6 +112,7 @@ export const createNote = mutation({
   args: {
     title: v.string(),
     content: v.string(),
+    image: v.string(),
     tags: v.array(v.string()),
     userId: v.string(),
   },
@@ -114,6 +120,7 @@ export const createNote = mutation({
     const now = Date.now();
     return await ctx.db.insert("notes", {
       title: args.title,
+      image: args.image,
       content: args.content,
       tags: args.tags,
       isArchived: false,
@@ -129,6 +136,7 @@ export const updateNote = mutation({
   args: {
     id: v.id("notes"),
     title: v.optional(v.string()),
+    image: v.optional(v.string()),
     content: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
   },
