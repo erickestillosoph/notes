@@ -1,4 +1,3 @@
-import { formatDistanceToNow } from "date-fns";
 import { Badge } from "./ui/badge";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -33,14 +32,6 @@ export default function NotesList({
       </div>
     );
   }
-
-  const formatDate = (timestamp) => {
-    try {
-      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-    } catch {
-      return "Unknown";
-    }
-  };
 
   const truncateContent = (content, maxLength = 80) => {
     if (!content) return "";

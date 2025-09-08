@@ -59,7 +59,7 @@ export default function TagsView() {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-white w-full">
       <div className="w-full md:w-full flex flex-col border-r border-gray-200">
         <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-4">
@@ -69,9 +69,7 @@ export default function TagsView() {
               </Button>
             )}
             <Tag className="w-6 h-6 text-gray-700" />
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Notes tagged "{tag}"
-            </h1>
+            <h1 className="text-2xl font-semibold text-gray-900">{tag}</h1>
           </div>
 
           <div className="relative">
@@ -102,27 +100,6 @@ export default function TagsView() {
           />
         </div>
       </div>
-
-      {/* Note Preview Panel - Desktop Only */}
-      {!isMobile && (
-        <div className="flex-1 min-w-full bg-white">
-          <div className="h-full flex items-center justify-center text-gray-500">
-            {filteredNotes?.length === 0 ? (
-              <div className="text-center">
-                <Tag className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg mb-2">No notes with tag "{tag}"</p>
-                <p className="text-sm">
-                  Create a note and add this tag to see it here
-                </p>
-              </div>
-            ) : (
-              <div className="text-center">
-                <p>Select a note to view it here</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
