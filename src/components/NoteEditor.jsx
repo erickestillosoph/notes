@@ -26,7 +26,7 @@ export default function NoteEditor() {
   const navigate = useNavigate();
   const { user } = useUser();
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [isModified, setIsModified] = useState(false);
@@ -44,6 +44,8 @@ export default function NoteEditor() {
   const updateNote = useMutation(api.notes.updateNote);
   const deleteNote = useMutation(api.notes.deleteNote);
   const toggleArchive = useMutation(api.notes.toggleArchiveNote);
+  const generateUploadUrl = useMutation(api.notes.generateUploadUrl);
+  const saveImageToNote = useMutation(api.notes.saveImageToNote);
 
   const currentNote = note?.find((n) => n._id === noteId);
 
@@ -67,6 +69,27 @@ export default function NoteEditor() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isModified]);
+  const uploadToConvex = useCallback(
+    async (targetNoteId, file) => {
+      const uploadUrl = await generateUploadUrl();
+
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Upload failed with status ${res.status}`);
+      }
+
+      const { storageId } = await res.json();
+      if (!storageId) throw new Error("No storageId returned");
+
+      await saveImageToNote({ noteId: targetNoteId, imageId: storageId });
+    },
+    [generateUploadUrl, saveImageToNote]
+  );
 
   const handleSave = useCallback(
     async (silent = false) => {
@@ -85,14 +108,17 @@ export default function NoteEditor() {
           .split(",")
           .map((tag) => tag.trim())
           .filter((tag) => tag.length > 0);
-
         if (isNewNote) {
-          await createNote({
+          const newId = await createNote({
             title: title.trim(),
             content: content.trim(),
             tags: tagArray,
             userId: user.id,
           });
+
+          if (imageFile) {
+            await uploadToConvex(newId, imageFile);
+          }
         } else {
           await updateNote({
             id: noteId,
@@ -125,6 +151,8 @@ export default function NoteEditor() {
       title,
       updateNote,
       user,
+      imageFile,
+      uploadToConvex,
     ]
   );
 
@@ -208,9 +236,21 @@ export default function NoteEditor() {
     setIsModified(true);
   };
 
-  const handleImageChange = (value) => {
-    setImage(value);
+  const handleImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
     setIsModified(true);
+
+    if (!isNewNote) {
+      try {
+        await uploadToConvex(noteId, file);
+        toast.success("Image uploaded");
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to upload image");
+      }
+    }
   };
 
   const handleContentChange = (value) => {
@@ -360,14 +400,15 @@ export default function NoteEditor() {
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto p-6 space-y-6">
           <div className="space-y-2">
-            <Input
-              type="file"
-              value={image}
-              accept="image/*"
-              onChange={(e) => handleImageChange(e.target.value)}
-              className="!text-lg w-sm"
-              autoFocus
-            />
+            <div className="space-y-2">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="!text-lg w-sm"
+                autoFocus
+              />
+            </div>
           </div>
           {/* Title */}
           <div className="space-y-2">

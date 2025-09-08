@@ -166,7 +166,7 @@ export const updateNote = mutation({
     content: v.string(),
     image: v.optional(v.string()),
     tags: v.optional(v.array(v.string())), // Make optional to match schema
-    userId: v.string(),
+    userId: v.optional(v.string()),
     crimesDone: v.optional(v.string()),
     location: v.optional(v.string()),
     jobDone: v.optional(v.string()),
