@@ -1,5 +1,5 @@
-import { UserButton, useUser } from "@clerk/clerk-react";
-import { ArrowLeft, User, Palette, Type } from "lucide-react";
+import { UserButton } from "@clerk/clerk-react";
+import { ArrowLeft, Palette, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 export default function SettingsView() {
   const navigate = useNavigate();
-  const { user } = useUser();
+
   const { theme, setTheme } = useTheme();
 
   const colorThemes = [
@@ -86,37 +86,6 @@ export default function SettingsView() {
       <div className="p-6 max-w-2xl">
         <div className="space-y-6">
           {/* User profile */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="size-5" />
-                Profile
-              </CardTitle>
-              <CardDescription>Your account information</CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-700">
-                    Name
-                  </Label>
-                  <CardDescription>
-                    {user?.fullName || "Not set"}
-                  </CardDescription>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-gray-700">
-                    Email
-                  </Label>
-                  <CardDescription>
-                    {user?.emailAddresses?.[0]?.emailAddress}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Color theme */}
           <Card>
