@@ -14,12 +14,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Bold,
   Italic,
-  Underline,
   Strikethrough,
   Code,
   Heading1,
@@ -36,7 +34,7 @@ import {
 const TipTapEditor = forwardRef(
   ({ content, onChange, placeholder = "Start typing..." }, ref) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [url, setUrl] = useState("");
+    const [url, setUrl] = useState("");
 
     const editor = useEditor({
       extensions: [
@@ -81,7 +79,7 @@ const TipTapEditor = forwardRef(
     const addLink = () => {
       if (!url) return;
       editor.chain().focus().setLink({ href: url }).run();
-      setUrl("");          // reset input
+      setUrl(""); // reset input
       setIsDialogOpen(false); // close dialog
     };
 
@@ -221,7 +219,10 @@ const TipTapEditor = forwardRef(
                 />
 
                 <DialogFooter className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button onClick={addLink}>Add</Button>

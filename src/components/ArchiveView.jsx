@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "convex/react";
-import { Archive, Search, NotebookIcon } from "lucide-react";
+import { Archive, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import NotesList from "./NotesList";
-import NotePreview from "./NotePreview";
+// import NotePreview from "./NotePreview";
 import { api } from "../../convex/_generated/api";
 
 export default function ArchiveView() {
@@ -30,10 +30,6 @@ export default function ArchiveView() {
       note.tags.some((tag) => tag.toLowerCase().includes(searchLower))
     );
   });
-
-  const selectedNote = filteredNotes?.find(
-    (note) => note._id === selectedNoteId
-  );
 
   useEffect(() => {
     const checkMobile = () => {
@@ -63,7 +59,7 @@ export default function ArchiveView() {
   return (
     <div className="flex h-screen bg-white">
       {/* Notes List Panel */}
-      <div className="w-full md:w-80 flex flex-col border-r border-gray-200">
+      <div className="w-full md:w-full flex flex-col border-r border-gray-200">
         {/* Header */}
         <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-4">
@@ -96,29 +92,21 @@ export default function ArchiveView() {
         </div>
       </div>
 
-      {/* Note Preview Panel - Desktop Only */}
       {!isMobile && (
-        <div className="flex-1 min-w-0 bg-white">
-          {selectedNote ? (
-            <NotePreview
-              note={selectedNote}
-              onEdit={() => navigate(`/note/${selectedNote._id}`)}
-            />
-          ) : (
-            <div className="h-full flex items-center justify-center text-gray-500">
-              {filteredNotes?.length === 0 ? (
-                <div className="text-center">
-                  <Archive className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg mb-2">No archived notes</p>
-                  <p className="text-sm">Archived notes will appear here</p>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <p>Select an archived note to view it here</p>
-                </div>
-              )}
-            </div>
-          )}
+        <div className="flex-1 min-w-80 bg-white">
+          <div className="h-full flex items-center justify-center text-gray-500">
+            {filteredNotes?.length === 0 ? (
+              <div className="text-center">
+                <Archive className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p className="text-lg mb-2">No archived notes</p>
+                <p className="text-sm">Archived notes will appear here</p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p>Select an archived note to view it here</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

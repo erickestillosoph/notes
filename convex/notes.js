@@ -7,6 +7,18 @@ export const getNotes = query({
     userId: v.string(),
     isArchived: v.optional(v.boolean()),
     tagFilter: v.optional(v.string()),
+    crimesDone: v.optional(v.string()),
+    location: v.optional(v.string()),
+    jobDone: v.optional(v.string()),
+    jobCategory: v.optional(v.string()),
+    jobRole: v.optional(v.string()),
+    category: v.optional(v.string()),
+    name: v.optional(v.string()),
+    status: v.optional(v.string()),
+    title: v.optional(v.string()),
+    content: v.optional(v.string()),
+    image: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     let query = ctx.db
@@ -107,22 +119,37 @@ export const getUserTags = query({
   },
 });
 
-// Create a new note
 export const createNote = mutation({
   args: {
     title: v.string(),
     content: v.string(),
-    image: v.string(),
-    tags: v.array(v.string()),
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())), // Make optional to match schema
     userId: v.string(),
+    crimesDone: v.optional(v.string()),
+    location: v.optional(v.string()),
+    jobDone: v.optional(v.string()),
+    jobCategory: v.optional(v.string()),
+    jobRole: v.optional(v.string()),
+    category: v.optional(v.string()),
+    status: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
     return await ctx.db.insert("notes", {
       title: args.title,
+      name: args.name,
+      status: args.status,
+      category: args.category,
+      crimesDone: args.crimesDone,
+      location: args.location,
+      jobDone: args.jobDone,
+      jobCategory: args.jobCategory,
+      jobRole: args.jobRole,
       image: args.image,
       content: args.content,
-      tags: args.tags,
+      tags: args.tags || [], // Provide default empty array if not provided
       isArchived: false,
       userId: args.userId,
       createdAt: now,
@@ -135,10 +162,17 @@ export const createNote = mutation({
 export const updateNote = mutation({
   args: {
     id: v.id("notes"),
-    title: v.optional(v.string()),
+    title: v.string(),
+    content: v.string(),
     image: v.optional(v.string()),
-    content: v.optional(v.string()),
-    tags: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())), // Make optional to match schema
+    userId: v.string(),
+    crimesDone: v.optional(v.string()),
+    location: v.optional(v.string()),
+    jobDone: v.optional(v.string()),
+    jobCategory: v.optional(v.string()),
+    jobRole: v.optional(v.string()),
+    category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
@@ -168,5 +202,48 @@ export const deleteNote = mutation({
   args: { id: v.id("notes") },
   handler: async (ctx, args) => {
     return await ctx.db.delete(args.id);
+  },
+});
+
+// Generate upload URL for image
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+// Save uploaded image to note (updated for string URLs)
+export const saveImageToNote = mutation({
+  args: {
+    noteId: v.id("notes"),
+    imageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const imageUrl = await ctx.storage.getUrl(args.imageId);
+    return await ctx.db.patch(args.noteId, {
+      image: imageUrl, // Store the URL instead of the ID
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+// Get image URL from storage ID
+export const getImageUrl = query({
+  args: {
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
+  },
+});
+
+// Delete image from storage
+export const deleteImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.storage.delete(args.storageId);
   },
 });

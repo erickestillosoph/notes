@@ -38,6 +38,7 @@ export default function Layout({ children }) {
             e.preventDefault();
             navigate("/settings");
             break;
+
           case "n":
             e.preventDefault();
             navigate("/new");

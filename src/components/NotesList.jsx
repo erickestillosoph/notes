@@ -52,20 +52,35 @@ export default function NotesList({
   };
 
   return (
-    <div>
+    <div className="grid grid-cols-3 w-full">
       {notes.map((note) => (
         <button
           key={note._id}
           onClick={() => onNoteSelect(note._id)}
           className={cn(
-            "w-full p-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100",
+            "w-full p-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 ",
             selectedNoteId === note._id && "bg-blue-50 border-blue-200"
           )}
         >
-          <div className="space-y-2">
+          <div
+            className="space-y-2 grid text-center justify-center"
+            style={{ alignContent: "center" }}
+          >
             <h3 className="font-medium text-base text-gray-900 line-clamp-1">
               {note.title || "Untitled"}
             </h3>
+            <div
+              className="space-y-2"
+              style={{ alignContent: "center", margin: "auto" }}
+            >
+              <img
+                src={note.image}
+                alt="alt"
+                width="100px"
+                height="100px"
+                style={{ borderRadius: "100%", backgroundColor: "black" }}
+              />
+            </div>
 
             {note.content && (
               <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">

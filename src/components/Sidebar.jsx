@@ -102,7 +102,6 @@ export default function Sidebar() {
           </Button>
         </div>
 
-        {/* Tags section */}
         {tags && tags.length > 0 && (
           <div className="mt-8">
             <h3 className="text-sm font-medium text-gray-500 px-3 mb-3 uppercase tracking-wide">

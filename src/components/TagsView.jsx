@@ -6,7 +6,7 @@ import { Tag, ArrowLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NotesList from "./NotesList";
-import NotePreview from "./NotePreview";
+// import NotePreview from "./NotePreview";
 import { api } from "../../convex/_generated/api";
 
 export default function TagsView() {
@@ -34,10 +34,6 @@ export default function TagsView() {
     );
   });
 
-  const selectedNote = filteredNotes?.find(
-    (note) => note._id === selectedNoteId
-  );
-
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -49,7 +45,6 @@ export default function TagsView() {
   }, []);
 
   useEffect(() => {
-    // Auto-select first note if none selected and notes available
     if (filteredNotes?.length && !selectedNoteId && !isMobile) {
       setSelectedNoteId(filteredNotes[0]._id);
     }
@@ -65,9 +60,7 @@ export default function TagsView() {
 
   return (
     <div className="flex h-screen bg-white">
-      {/* Notes List Panel */}
-      <div className="w-full md:w-80 flex flex-col border-r border-gray-200">
-        {/* Header */}
+      <div className="w-full md:w-full flex flex-col border-r border-gray-200">
         <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-4">
             {isMobile && (
@@ -81,7 +74,6 @@ export default function TagsView() {
             </h1>
           </div>
 
-          {/* Search within tag */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
@@ -113,29 +105,22 @@ export default function TagsView() {
 
       {/* Note Preview Panel - Desktop Only */}
       {!isMobile && (
-        <div className="flex-1 min-w-0 bg-white">
-          {selectedNote ? (
-            <NotePreview
-              note={selectedNote}
-              onEdit={() => navigate(`/note/${selectedNote._id}`)}
-            />
-          ) : (
-            <div className="h-full flex items-center justify-center text-gray-500">
-              {filteredNotes?.length === 0 ? (
-                <div className="text-center">
-                  <Tag className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p className="text-lg mb-2">No notes with tag "{tag}"</p>
-                  <p className="text-sm">
-                    Create a note and add this tag to see it here
-                  </p>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <p>Select a note to view it here</p>
-                </div>
-              )}
-            </div>
-          )}
+        <div className="flex-1 min-w-full bg-white">
+          <div className="h-full flex items-center justify-center text-gray-500">
+            {filteredNotes?.length === 0 ? (
+              <div className="text-center">
+                <Tag className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p className="text-lg mb-2">No notes with tag "{tag}"</p>
+                <p className="text-sm">
+                  Create a note and add this tag to see it here
+                </p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p>Select a note to view it here</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

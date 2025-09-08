@@ -2,13 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation } from "convex/react";
-import {
-  ArrowLeft,
-  Trash2,
-  Archive,
-  Copy,
-  Ambulance as Cancel,
-} from "lucide-react";
+import { ArrowLeft, Trash2, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +26,7 @@ export default function NoteEditor() {
   const navigate = useNavigate();
   const { user } = useUser();
   const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [isModified, setIsModified] = useState(false);
@@ -213,6 +208,11 @@ export default function NoteEditor() {
     setIsModified(true);
   };
 
+  const handleImageChange = (value) => {
+    setImage(value);
+    setIsModified(true);
+  };
+
   const handleContentChange = (value) => {
     setContent(value);
     setIsModified(true);
@@ -359,6 +359,16 @@ export default function NoteEditor() {
       {/* Form */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto p-6 space-y-6">
+          <div className="space-y-2">
+            <Input
+              type="file"
+              value={image}
+              accept="image/*"
+              onChange={(e) => handleImageChange(e.target.value)}
+              className="!text-lg w-sm"
+              autoFocus
+            />
+          </div>
           {/* Title */}
           <div className="space-y-2">
             <Input

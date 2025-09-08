@@ -72,7 +72,7 @@ export default function NotesView() {
   return (
     <div className="flex h-screen bg-white">
       {/* Notes List Panel */}
-      <div className="w-full md:w-80 flex flex-col border-r border-gray-200">
+      <div className="w-full md:w-[90%] flex flex-col border-r border-gray-200">
         {/* Header */}
         <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex flex-col items-start justify-between mb-4">

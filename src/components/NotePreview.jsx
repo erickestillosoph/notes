@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { Archive, Trash2, Share, MoreVertical, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
 import { api } from "../../convex/_generated/api";
 import ShareDialog from "./ShareDialog";
 import {
@@ -29,14 +27,6 @@ export default function NotePreview({ note, onEdit }) {
 
   const toggleArchive = useMutation(api.notes.toggleArchiveNote);
   const deleteNote = useMutation(api.notes.deleteNote);
-
-  const formatDate = (timestamp) => {
-    try {
-      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-    } catch {
-      return "Unknown";
-    }
-  };
 
   const handleArchive = async () => {
     try {
@@ -65,39 +55,7 @@ export default function NotePreview({ note, onEdit }) {
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-semibold text-gray-900 mb-4 break-words leading-tight">
-              {note.title || "Untitled"}
-            </h1>
-
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Tags</span>
-                {note.tags?.length > 0 ? (
-                  <div className="flex gap-1 flex-wrap">
-                    {note.tags.map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="text-xs px-2 py-1 bg-primary/25 text-primary hover:bg-primary/50"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <span>None</span>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2 text-xs">
-                <span className="font-medium text-gray-900">Last edited</span>
-                <span>{formatDate(note.updatedAt)}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 ml-4">
+          <div className="flex flex-col items-center gap-2 ml-4">
             <Button
               variant="outline"
               size="sm"

@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "convex/react";
-import { Search, ArrowLeft, NotebookIcon } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NotesList from "./NotesList";
-import NotePreview from "./NotePreview";
 import { api } from "../../convex/_generated/api";
 
 export default function SearchView() {
@@ -55,7 +54,7 @@ export default function SearchView() {
   return (
     <div className="flex h-screen bg-white">
       {/* Search Panel */}
-      <div className="w-full md:w-80 flex flex-col border-r border-gray-200">
+      <div className="w-full md:w-full flex flex-col border-r border-gray-200">
         {/* Header */}
         <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-4">
@@ -113,13 +112,8 @@ export default function SearchView() {
 
       {/* Note Preview Panel - Desktop Only */}
       {!isMobile && (
-        <div className="flex-1 min-w-0 bg-white">
-          {selectedNote ? (
-            <NotePreview
-              note={selectedNote}
-              onEdit={() => navigate(`/note/${selectedNote._id}`)}
-            />
-          ) : (
+        <div className="flex-1 min-w-80 bg-white">
+          {selectedNote && (
             <div className="h-full flex items-center justify-center text-gray-500">
               <div className="text-center">
                 <p>
